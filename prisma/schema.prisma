@@ -1,0 +1,38 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = "file:./dev.db"
+}
+
+model User {
+  id        Int      @id @default(autoincrement())
+  email     String   @unique
+  password  String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @default(now())
+  lists     List[]
+}
+
+model List {
+  id        Int      @id @default(autoincrement())
+  name      String   @default("My List")
+  authorId  Int
+  createdAt DateTime @default(now())
+  updatedAt DateTime @default(now())
+  author    User     @relation(fields: [authorId], references: [id])
+  todos     Todo[]
+}
+
+model Todo {
+  id        Int      @id @default(autoincrement())
+  listId    Int
+  name      String
+  content   String?
+  complete  Boolean  @default(false)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @default(now())
+  list      List     @relation(fields: [listId], references: [id])
+}
